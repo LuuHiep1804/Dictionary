@@ -1,7 +1,13 @@
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 public class Dictionary {
 
     private int sizeOfWords = 0;
-    Word[] words = new Word[200];
+    Word[] words = new Word[601];
+    HashMap<String, String> hashMap = new HashMap<>();
+    Set<Map.Entry<String, String>> setHashMap = hashMap.entrySet();
 
     /**
      * thêm từ mới vào mảng
@@ -10,6 +16,7 @@ public class Dictionary {
         Word newWords = new Word(word_target, word_explain);
         words[sizeOfWords] = newWords;
         sizeOfWords++;
+        hashMap.put(word_target, word_explain);
     }
 
     public void setSizeOfWords(int a){

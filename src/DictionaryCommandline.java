@@ -2,7 +2,7 @@ import java.util.Scanner;
 
 public class DictionaryCommandline {
 
-    private final DictionaryManagement dictionary_Management = new DictionaryManagement();
+    DictionaryManagement dictionary_Management = new DictionaryManagement();
 
     public void showAllWords() {
         //TODO:
@@ -86,9 +86,8 @@ public class DictionaryCommandline {
         dictionary_Management.dictionaryLookup();
     }
 
-    public static void main(String[] args) {
-        DictionaryCommandline dC = new DictionaryCommandline();
-        dC.insertFromFile();
+    public String Search(String ch){
+        return dictionary_Management.Search(ch);
     }
 
 }

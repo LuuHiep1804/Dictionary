@@ -208,4 +208,17 @@ public class DictionaryManagement {
         }
     }
 
+    public String Search(String ch){
+        boolean check = false;
+        int id = 0;
+        for (int i = 0; i < dictionary.getSizeOfWords(); i++) {
+            if (dictionary.words[i].getWord_target().equals(ch)){
+                check = true;
+                id = i;
+                break;
+            }
+        }
+        return dictionary.words[id].getWord_explain();
+    }
+
 }
