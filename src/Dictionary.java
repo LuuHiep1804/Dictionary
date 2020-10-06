@@ -5,7 +5,7 @@ import java.util.Set;
 public class Dictionary {
 
     private int sizeOfWords = 0;
-    Word[] words = new Word[601];
+    Word[] words = new Word[1000];
     HashMap<String, String> hashMap = new HashMap<>();
     Set<Map.Entry<String, String>> setHashMap = hashMap.entrySet();
 
