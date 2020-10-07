@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.awt.image.ImagingOpException;
 import java.io.*;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Map;
 
 
@@ -63,6 +64,7 @@ public class DictionaryApp extends javax.swing.JFrame {
 
     public DictionaryApp() {
         dC.insertFromFile();
+
         initComponents();
         Menu.add(panelSuggestions);
         mod = new DefaultListModel();
@@ -544,11 +546,9 @@ public class DictionaryApp extends javax.swing.JFrame {
         // TODO add your handling code here:
         OutPutWords.setText("");
         String ch = "";
-        for (Map.Entry<String, String> i: dC.dictionary_Management.dictionary.setHashMap){
-            if (i.getKey().equals(EnterWords.getText())){
-                ch = i.getValue();
-            }
-        }
+        int id = dC.searchApp(EnterWords.getText());
+        ch = dC.dictionary_Management.dictionary.listWord.get(id).getWord_explain();
+
         String str = "";
         int start = 0;
         for (int i = 0; i < ch.length(); i++){
@@ -580,10 +580,10 @@ public class DictionaryApp extends javax.swing.JFrame {
         if (!Search.equals("")) {
             mod.removeAllElements();
             int count = 0;
-            for (String i: dC.dictionary_Management.dictionary.hashMap.keySet()){
-                if(i.charAt(0) == Search.charAt(0)){
-                    if(i.contains(Search)){
-                        mod.addElement(i);
+            for (Word i: dC.dictionary_Management.dictionary.listWord){
+                if(i.getWord_target().charAt(0) == Search.charAt(0)){
+                    if(i.getWord_target().contains(Search)){
+                        mod.addElement(i.getWord_target());
                         count++;
                         if(count == 10) break;
                     }
@@ -661,11 +661,11 @@ public class DictionaryApp extends javax.swing.JFrame {
             ;
         }else {
             String str = delWText.getText();
-            for (Map.Entry<String, String> i: dC.dictionary_Management.dictionary.setHashMap){
-                if (i.getKey().equals(str)){
-                    dC.dictionary_Management.dictionary.hashMap.remove(i.getKey(), i.getValue());
-                    break;
-                }
+            int id = dC.searchApp(str);
+            if (id == -1){
+                ;
+            }else {
+                dC.dictionary_Management.dictionary.listWord.remove(id);
             }
         }
         delWText.setText("");
@@ -695,20 +695,28 @@ public class DictionaryApp extends javax.swing.JFrame {
         // TODO add your handling code here:
         if (WTText.getText().equals("")){
             ;
-        }else{
+        }else {
             String str = WTText.getText();
             String fixTarget = fixWordTarget.getText();
             String fixExplain = fixWordExplain.getText();
-            for (Map.Entry<String, String> i: dC.dictionary_Management.dictionary.setHashMap){
-                if (i.getKey().equals(str) && fixTarget.equals("")){
-                    dC.dictionary_Management.dictionary.hashMap.replace(i.getKey(), fixExplain);
-                    break;
-                }else if (i.getKey().equals(str) && fixExplain.equals("")){
-                    ;
-                }else
-                {
-                    ;
+            int id = dC.searchApp(str);
+            if (id != -1){
+                if (fixTarget.equals("") && !fixExplain.equals("")){
+                    dC.dictionary_Management.dictionary.listWord.get(id).setWord_explain(fixExplain);
                 }
+                if (fixExplain.equals("") && !fixTarget.equals("")){
+                    dC.dictionary_Management.dictionary.listWord.get(id).setWord_target(fixTarget);
+                }
+                if (!fixTarget.equals("") && !fixExplain.equals("")){
+                    dC.dictionary_Management.dictionary.listWord.get(id).setWord_explain(fixExplain);
+                    dC.dictionary_Management.dictionary.listWord.get(id).setWord_target(fixTarget);
+                }
+                Collections.sort(dC.dictionary_Management.dictionary.listWord, new Comparator<Word>() {
+                    @Override
+                    public int compare(Word o1, Word o2) {
+                        return o1.getWord_target().compareTo(o2.getWord_target());
+                    }
+                });
             }
         }
         WTText.setText("");

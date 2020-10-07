@@ -69,13 +69,10 @@ public class DictionaryManagement {
         Scanner sc = new Scanner(System.in);
         String words = sc.nextLine();
         boolean check = false;
-        int word_id = 0;
-        for (int i = 0; i < dictionary.getSizeOfWords(); i++) {
-            if (dictionary.words[i].getWord_target().equals(words)) {
-                word_id = i;
-                check = true;
-                break;
-            }
+        int word_id;
+        word_id = searchApp(words);
+        if (word_id != -1){
+            check = true;
         }
         if (check) {
             System.out.printf("|%-20s |%-20s \n", "English", "Vietnamese");
@@ -102,15 +99,13 @@ public class DictionaryManagement {
         int id = 0;
         System.out.print("Enter the word you want to delete: ");
         ch = sc.nextLine();
-        for (int i = 0; i < dictionary.getSizeOfWords(); i++) {
-            if (dictionary.words[i].getWord_target().equals(ch)) {
-                id = i;
-            }
+
+        id = searchApp(ch);
+
+        if (dictionary.getSizeOfWords() - 1 - id >= 0) {
+            System.arraycopy(dictionary.words, id + 1, dictionary.words, id, dictionary.getSizeOfWords() - 1 - id);
         }
 
-        for (int i = id; i < dictionary.getSizeOfWords() - 1; i++) {
-            dictionary.words[i] = dictionary.words[i + 1];
-        }
         dictionary.words[dictionary.getSizeOfWords() - 1] = null;
         dictionary.setSizeOfWords(dictionary.getSizeOfWords() - 1);
     }
@@ -133,21 +128,19 @@ public class DictionaryManagement {
                 String fixWordsTarget;
                 System.out.print("enter word to replace the word to be fixed: ");
                 fixWordsTarget = sc.nextLine();
-                for (int i = 0; i < dictionary.getSizeOfWords(); i++) {
-                    if (dictionary.words[i].getWord_target().equals(ch)) {
-                        dictionary.words[i].setWord_target(fixWordsTarget);
-                    }
-                }
+
+                int id = searchApp(ch);
+                dictionary.words[id].setWord_target(fixWordsTarget);
+
                 break;
             case "FWE":
                 String fixWordsExplain;
                 System.out.print("enter word to replace the word to be fixed: ");
                 fixWordsExplain = sc.nextLine();
-                for (int i = 0; i < dictionary.getSizeOfWords(); i++) {
-                    if (dictionary.words[i].getWord_target().equals(ch)) {
-                        dictionary.words[i].setWord_explain(" " + fixWordsExplain);
-                    }
-                }
+
+                int id_ = searchApp(ch);
+                dictionary.words[id_].setWord_explain(" " + fixWordsExplain);
+
                 break;
             case "FA":
                 String fixWords_Target;
@@ -156,50 +149,50 @@ public class DictionaryManagement {
                 fixWords_Target = sc.nextLine();
                 System.out.print("Enter the word explain: ");
                 fixWords_Explain = sc.nextLine();
-                for (int i = 0; i < dictionary.getSizeOfWords(); i++) {
-                    if (dictionary.words[i].getWord_target().equals(ch)) {
-                        dictionary.words[i].setWord(fixWords_Target, " " + fixWords_Explain);
-                    }
-                }
+
+                int _id = searchApp(ch);
+                dictionary.words[_id].setWord(fixWords_Target, fixWords_Explain);
+
                 break;
             default:
         }
     }
 
-    public void dictionarySearcher(){
+    public void dictionarySearcher() {
         Scanner sc = new Scanner(System.in);
         String ch;
         System.out.print("Search for words: ");
         ch = sc.nextLine();
         boolean check = false;
         int id = 0;
-        for (int i = 0; i < dictionary.getSizeOfWords(); i++) {
-            if (dictionary.words[i].getWord_target().equals(ch)){
-                check = true;
-                id = i;
-                break;
-            }
+
+        id = searchApp(ch);
+
+        if (id != -1){
+            check = true;
         }
 
-        if (check){
+        if (check) {
             System.out.printf("|%-20s |%-20s \n", "English", "Vietnamese");
             System.out.printf("|%-20s |%-20s \n", dictionary.words[id].getWord_target(),
                     dictionary.words[id].getWord_explain());
-        }else{
+        } else {
             System.out.println("Your words: ");
-            for (int i = 0; i < dictionary.getSizeOfWords(); i++){
-                if (dictionary.words[i].getWord_target().contains(ch)){
-                    System.out.println("\t\t" + dictionary.words[i].getWord_target());
+            for (int i = 0; i < dictionary.getSizeOfWords(); i++) {
+                if (dictionary.words[i].getWord_target().charAt(0) == ch.charAt(0)){
+                    if (dictionary.words[i].getWord_target().contains(ch)) {
+                        System.out.println("\t\t" + dictionary.words[i].getWord_target());
+                    }
                 }
             }
             dictionaryLookup();
         }
     }
 
-    public void dictionaryExportToFile(){
-        try{
+    public void dictionaryExportToFile() {
+        try {
             FileWriter fw = new FileWriter("inputDictionaries.txt");
-            for (int i = 0; i < dictionary.getSizeOfWords(); i++){
+            for (int i = 0; i < dictionary.getSizeOfWords(); i++) {
                 fw.write(dictionary.words[i].getWord_target() + " " + dictionary.words[i].getWord_explain() + "\n");
             }
             fw.close();
@@ -208,17 +201,23 @@ public class DictionaryManagement {
         }
     }
 
-    public String Search(String ch){
-        boolean check = false;
-        int id = 0;
-        for (int i = 0; i < dictionary.getSizeOfWords(); i++) {
-            if (dictionary.words[i].getWord_target().equals(ch)){
-                check = true;
-                id = i;
-                break;
+    public int searchApp(String ch) {
+        int l = 0;
+        int r = dictionary.listWord.size() - 1;
+        while (l <= r) {
+            int m = l + (r - l) / 2;
+            int res = ch.compareTo(dictionary.listWord.get(m).getWord_target());
+
+            if (res == 0) {
+                return m;
+            }else if (res > 0) {
+                l = m + 1;
+            } else {
+                r = m - 1;
             }
+
         }
-        return dictionary.words[id].getWord_explain();
+        return -1;
     }
 
 }

@@ -86,8 +86,8 @@ public class DictionaryCommandline {
         dictionary_Management.dictionaryLookup();
     }
 
-    public String Search(String ch){
-        return dictionary_Management.Search(ch);
+    public int searchApp(String ch){
+        return dictionary_Management.searchApp(ch);
     }
 
 }
