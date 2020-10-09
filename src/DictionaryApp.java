@@ -61,10 +61,10 @@ public class DictionaryApp extends javax.swing.JFrame {
 
     private DefaultListModel mod;
     DictionaryCommandline dC = new DictionaryCommandline();
+    Speak speak = new Speak();
 
     public DictionaryApp() {
         dC.insertFromFile();
-
         initComponents();
         Menu.add(panelSuggestions);
         mod = new DefaultListModel();
@@ -598,6 +598,12 @@ public class DictionaryApp extends javax.swing.JFrame {
      */
     private void loudSpeakerActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
+        String stringSpeak = EnterWords.getText();
+        try {
+            speak.Speaker(stringSpeak);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
