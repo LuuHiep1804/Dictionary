@@ -1,5 +1,6 @@
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.ImagingOpException;
@@ -62,6 +63,7 @@ public class DictionaryApp extends javax.swing.JFrame {
     private DefaultListModel mod;
     DictionaryCommandline dC = new DictionaryCommandline();
     Speak speak = new Speak();
+    private ListSelectionEvent evt;
 
     public DictionaryApp() {
         dC.insertFromFile();
@@ -383,6 +385,7 @@ public class DictionaryApp extends javax.swing.JFrame {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 EnterWordsKeyPressed(evt);
             }
+
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 EnterWordsKeyReleased(evt);
             }
@@ -551,13 +554,13 @@ public class DictionaryApp extends javax.swing.JFrame {
 
         String str = "";
         int start = 0;
-        for (int i = 0; i < ch.length(); i++){
-            if(ch.charAt(i) == ';'){
+        for (int i = 0; i < ch.length(); i++) {
+            if (ch.charAt(i) == ';') {
                 str = str + ch.substring(start, i) + "\n" + "\n";
-                start = i+1;
+                start = i + 1;
             }
         }
-        if(str.equals("")){
+        if (str.equals("")) {
             str = ch;
         }
         OutPutWords.append(str);
@@ -580,12 +583,12 @@ public class DictionaryApp extends javax.swing.JFrame {
         if (!Search.equals("")) {
             mod.removeAllElements();
             int count = 0;
-            for (Word i: dC.dictionary_Management.dictionary.listWord){
-                if(i.getWord_target().charAt(0) == Search.charAt(0)){
-                    if(i.getWord_target().contains(Search)){
+            for (Word i : dC.dictionary_Management.dictionary.listWord) {
+                if (i.getWord_target().charAt(0) == Search.charAt(0)) {
+                    if (i.getWord_target().contains(Search)) {
                         mod.addElement(i.getWord_target());
                         count++;
-                        if(count == 10) break;
+                        if (count == 10) break;
                     }
                 }
             }
@@ -629,9 +632,24 @@ public class DictionaryApp extends javax.swing.JFrame {
         // TODO add your handling code here:
         String wordTarget = textWTarget.getText();
         String wordExplain = textWExplain.getText();
-        if(wordTarget.equals("") || wordExplain.equals("")){
+
+        BufferedWriter bw = null;
+        FileWriter fw = null;
+        try{
+            String data = "\n" + wordTarget + " " + wordExplain;
+            File file = new File("dictionaries.txt");
+            fw = new FileWriter(file.getAbsoluteFile(), true);
+            bw = new BufferedWriter(fw);
+            bw.write(data);
+            bw.close();
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        if (wordTarget.equals("") || wordExplain.equals("")) {
             ;
-        }else {
+        } else {
             dC.dictionary_Management.dictionary.addWord(wordTarget, wordExplain);
         }
         textWTarget.setText("");
@@ -663,14 +681,14 @@ public class DictionaryApp extends javax.swing.JFrame {
     private void jbDeleteActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
 
-        if (delWText.getText().equals("")){
+        if (delWText.getText().equals("")) {
             ;
-        }else {
+        } else {
             String str = delWText.getText();
             int id = dC.searchApp(str);
-            if (id == -1){
+            if (id == -1) {
                 ;
-            }else {
+            } else {
                 dC.dictionary_Management.dictionary.listWord.remove(id);
             }
         }
@@ -699,21 +717,21 @@ public class DictionaryApp extends javax.swing.JFrame {
      */
     private void jbEditActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
-        if (WTText.getText().equals("")){
+        if (WTText.getText().equals("")) {
             ;
-        }else {
+        } else {
             String str = WTText.getText();
             String fixTarget = fixWordTarget.getText();
             String fixExplain = fixWordExplain.getText();
             int id = dC.searchApp(str);
-            if (id != -1){
-                if (fixTarget.equals("") && !fixExplain.equals("")){
+            if (id != -1) {
+                if (fixTarget.equals("") && !fixExplain.equals("")) {
                     dC.dictionary_Management.dictionary.listWord.get(id).setWord_explain(fixExplain);
                 }
-                if (fixExplain.equals("") && !fixTarget.equals("")){
+                if (fixExplain.equals("") && !fixTarget.equals("")) {
                     dC.dictionary_Management.dictionary.listWord.get(id).setWord_target(fixTarget);
                 }
-                if (!fixTarget.equals("") && !fixExplain.equals("")){
+                if (!fixTarget.equals("") && !fixExplain.equals("")) {
                     dC.dictionary_Management.dictionary.listWord.get(id).setWord_explain(fixExplain);
                     dC.dictionary_Management.dictionary.listWord.get(id).setWord_target(fixTarget);
                 }

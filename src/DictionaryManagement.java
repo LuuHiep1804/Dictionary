@@ -1,9 +1,5 @@
-import jdk.nashorn.internal.runtime.OptimisticReturnFilters;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.Scanner;
 
 public class DictionaryManagement {
@@ -87,6 +83,21 @@ public class DictionaryManagement {
      * cập nhật thêm từ
      **/
     public void updateWords(String wordTarget, String wordExplain) {
+
+        BufferedWriter bw = null;
+        FileWriter fw = null;
+        try{
+            String data = "\n" + wordTarget + " " + wordExplain;
+            File file = new File("dictionaries.txt");
+            fw = new FileWriter(file.getAbsoluteFile(), true);
+            bw = new BufferedWriter(fw);
+            bw.write(data);
+            bw.close();
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
         dictionary.addWord(wordTarget, wordExplain);
     }
 

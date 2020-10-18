@@ -3,7 +3,7 @@ import java.util.*;
 public class Dictionary {
 
     private int sizeOfWords = 0;
-    Word[] words = new Word[600];
+    Word[] words = new Word[1000];
     List<Word> listWord = new ArrayList<Word>();
 
     /**
